@@ -84,7 +84,7 @@ public:
      */
     virtual uint32_t getSsrc(TrackType trackType) {
         assert(trackType >= 0 && trackType < TrackMax);
-        auto track = _tracks[trackType];
+        auto &track = _tracks[trackType];
         if (!track) {
             return 0;
         }
@@ -96,7 +96,7 @@ public:
      */
     virtual uint16_t getSeqence(TrackType trackType) {
         assert(trackType >= 0 && trackType < TrackMax);
-        auto track = _tracks[trackType];
+        auto &track = _tracks[trackType];
         if (!track) {
             return 0;
         }
@@ -110,7 +110,7 @@ public:
         assert(trackType >= TrackInvalid && trackType < TrackMax);
         if (trackType != TrackInvalid) {
             //获取某track的时间戳
-            auto track = _tracks[trackType];
+            auto &track = _tracks[trackType];
             if (track) {
                 return track->_time_stamp;
             }
@@ -157,9 +157,9 @@ public:
      * @param keyPos 该包是否为关键帧的第一个包
      */
     void onWrite(RtpPacket::Ptr rtp, bool keyPos) override {
-        _speed += rtp->size();
+        _speed[rtp->type] += rtp->size();
         assert(rtp->type >= 0 && rtp->type < TrackMax);
-        auto track = _tracks[rtp->type];
+        auto &track = _tracks[rtp->type];
         if (track) {
             track->_seq = rtp->sequence;
             track->_time_stamp = rtp->timeStamp;
